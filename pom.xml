@@ -81,8 +81,7 @@
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 				<configuration>
-					<dotGitDirectory>https://github.com/EduardoNunes5/bookstoremanager.git</dotGitDirectory>
-					<!-- more config here as you see fit -->
+					<failOnNoGitDirectory>false</failOnNoGitDirectory>
 				</configuration>
 			</plugin>
 
