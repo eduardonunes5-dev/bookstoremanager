@@ -2,3 +2,6 @@ logging:
   level:
     br:
       con: DEBUG
+management:
+  server:
+    port: 8080
