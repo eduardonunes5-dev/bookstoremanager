@@ -17,4 +17,4 @@ logging:
   level:
     br:
       com:
-        eduardonunes5: DEBUG
+        eduardonunes: DEBUG
