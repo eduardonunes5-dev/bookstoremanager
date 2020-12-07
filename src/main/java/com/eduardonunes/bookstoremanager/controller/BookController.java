@@ -18,7 +18,7 @@ public class BookController {
     })
     @GetMapping
     public String hello(){
-        return "Hello, book store manager... I'm running an example with pull request.";
+        return "Hello, book store manager... I'm running an example with pull request!";
     }
 
     @GetMapping(value = "1")
