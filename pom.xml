@@ -77,7 +77,32 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco</artifactId>
+				<version>0.8.6</version>
+			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.host.url>https://sonarcloud.io/</sonar.host.url>
+				<sonar.exclusions>
+					src/main/java/**/BookStoreManagerApplication.java,
+					src/main/java/**/config/**,
+					src/main/java/**/exception/**,
+					src/main/java/**/dto/**,
+					src/main/java/**/entity/**,
+					src/main/java/**/repository/**,
+					src/test/java/**/
+				</sonar.exclusions>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
