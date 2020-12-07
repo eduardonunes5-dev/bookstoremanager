@@ -21,8 +21,4 @@ public class BookController {
         return "Hello, book store manager... I'm running an example with pull request!";
     }
 
-    @GetMapping(value = "1")
-    public String test(){
-        return "another test";
-    }
 }
