@@ -10,7 +10,7 @@ addons:
 cache:
   directories:
     - $HOME/.m2
-    - $home/.sonar/cache
+    - $HOME/.sonar/cache
 script:
   - mvn clean build sonar:sonar -P sonar
 before_script:
