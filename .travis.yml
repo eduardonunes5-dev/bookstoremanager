@@ -12,6 +12,6 @@ cache:
     - $HOME/.m2
     - $HOME/.sonar/cache
 script:
-  - mvn clean verify sonar:sonar -P sonar
+  - mvn clean package sonar:sonar -P sonar
 before_script:
   - chmod +x mvnw
