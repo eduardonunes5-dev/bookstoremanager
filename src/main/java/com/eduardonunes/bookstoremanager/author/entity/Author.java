@@ -19,7 +19,7 @@ public class Author extends Auditable {
     private String name;
 
     @Column(columnDefinition = "integer default 0")
-    private int age;
+    private Integer age;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Book> books;
