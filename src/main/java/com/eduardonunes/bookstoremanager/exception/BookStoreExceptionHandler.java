@@ -57,6 +57,7 @@ public class BookStoreExceptionHandler extends ResponseEntityExceptionHandler {
                 .code(status.value())
                 .status(status.getReasonPhrase())
                 .message(msg)
+                .errors(errors)
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(apiError, status);
