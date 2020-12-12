@@ -3,6 +3,7 @@ package com.eduardonunes.bookstoremanager.author.service;
 import com.eduardonunes.bookstoremanager.author.dto.AuthorDTO;
 import com.eduardonunes.bookstoremanager.author.entity.Author;
 import com.eduardonunes.bookstoremanager.author.exception.AuthorAlreadyExistsException;
+import com.eduardonunes.bookstoremanager.author.exception.AuthorNotFoundException;
 import com.eduardonunes.bookstoremanager.author.mapper.AuthorMapper;
 import com.eduardonunes.bookstoremanager.author.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,15 @@ public class AuthorService {
         verifyIfExists(authorDTO);
         Author authorToCreate = authorMapper.toModel(authorDTO);
         System.out.println(authorToCreate);
-        Author createdAuthor = authorRepository.save(authorToCreate);
+        Author createdAuthor = this.authorRepository.save(authorToCreate);
         return authorMapper.toDto(createdAuthor);
+    }
+
+    public AuthorDTO findById(Long id){
+        Author author = this.authorRepository.findById(id)
+                .orElseThrow(()->new AuthorNotFoundException(id));
+
+        return authorMapper.toDto(author);
     }
 
     private void verifyIfExists(AuthorDTO authorDTO) {
