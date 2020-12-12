@@ -7,8 +7,7 @@ import com.eduardonunes.bookstoremanager.author.exception.AuthorAlreadyExistsExc
 import com.eduardonunes.bookstoremanager.author.exception.AuthorNotFoundException;
 import com.eduardonunes.bookstoremanager.author.mapper.AuthorMapper;
 import com.eduardonunes.bookstoremanager.author.repository.AuthorRepository;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsEqual;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -87,6 +88,32 @@ public class AuthorServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(AuthorNotFoundException.class, ()-> this.authorService.findById(expectedFoundAuthorDTO.getId()));
+
+    }
+
+    @Test
+    void whenFindAllAuthorThenReturnAllAuthorsInDB() {
+        AuthorDTO expectedFoundAuthorDTO = authorDTOBuilder.buildAuthorDTO();
+        Author expectedFoundAuthor = authorMapper.toModel(expectedFoundAuthorDTO);
+
+        when(authorRepository.findAll())
+                .thenReturn(Collections.singletonList(expectedFoundAuthor));
+
+        List<AuthorDTO> expectedAuthorsDTO = authorService.findAll();
+
+        assertThat(expectedAuthorsDTO.size(), is(1));
+        assertThat(expectedAuthorsDTO.get(0), is(expectedFoundAuthorDTO));
+
+    }
+
+    @Test
+    void whenFindAllAuthorThenReturnEmptyList() {
+
+        when(authorRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<AuthorDTO> expectedAuthorsDTO = authorService.findAll();
+
+        assertThat(expectedAuthorsDTO.size(), is(0));
 
     }
 }
