@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api("Authors management")
 public interface AuthorControllerDocs {
@@ -27,4 +28,10 @@ public interface AuthorControllerDocs {
             @ApiResponse(code = 404, message = "Author not found")
     })
     AuthorDTO findById(@PathVariable Long id);
+
+    @ApiOperation(value = "List all registered authors")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return a list of authors in the database"),
+    })
+    List<AuthorDTO> findAll();
 }
