@@ -14,4 +14,4 @@ cache:
     - $HOME/.m2
     - $HOME/.sonar/cache
 script:
-  - mvn clean package sonar:sonar
+  - mvn clean package sonar:sonar -P sonar
