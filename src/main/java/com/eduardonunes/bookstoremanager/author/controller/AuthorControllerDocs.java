@@ -34,4 +34,12 @@ public interface AuthorControllerDocs {
             @ApiResponse(code = 200, message = "Return a list of authors in the database"),
     })
     List<AuthorDTO> findAll();
+
+
+    @ApiOperation(value = "Author deletion by their id")
+    @ApiResponses(value ={
+            @ApiResponse(code = 204, message = "Author deleted successfully!"),
+            @ApiResponse(code = 404, message = "Author not found!")
+    })
+    void deleteById(@PathVariable("id") Long id);
 }

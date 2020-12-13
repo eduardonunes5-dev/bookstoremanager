@@ -4,15 +4,12 @@ import com.eduardonunes.bookstoremanager.author.builder.AuthorDTOBuilder;
 import com.eduardonunes.bookstoremanager.author.dto.AuthorDTO;
 import com.eduardonunes.bookstoremanager.author.service.AuthorService;
 import com.eduardonunes.bookstoremanager.utils.JsonConversionUtils;
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.json.JsonContent;
-import org.springframework.boot.test.json.JsonContentAssert;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,9 +18,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.Collections;
-import java.util.Optional;
-
-import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,7 +110,17 @@ public class AuthorControllerTest {
 
     }
 
+    @Test
+    void whenDELETEWithValidIdThenNoContentIsReturned() throws Exception{
+        AuthorDTO deletedAuthor = authorDTOBuilder.buildAuthorDTO();
+        Long authorId = deletedAuthor.getId();
 
+        doNothing().when(authorService).delete(authorId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(AUTHOR_API_URL_PATH + '/' + authorId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
 
 
 }
