@@ -7,7 +7,6 @@ import com.eduardonunes.bookstoremanager.author.exception.AuthorAlreadyExistsExc
 import com.eduardonunes.bookstoremanager.author.exception.AuthorNotFoundException;
 import com.eduardonunes.bookstoremanager.author.mapper.AuthorMapper;
 import com.eduardonunes.bookstoremanager.author.repository.AuthorRepository;
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceTest {
@@ -88,6 +87,32 @@ public class AuthorServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(AuthorNotFoundException.class, ()-> this.authorService.findById(expectedFoundAuthorDTO.getId()));
+
+    }
+
+    @Test
+    void whenValidIdIsGivenThenRemoveAnAuthor() {
+        AuthorDTO authorDTOToremove = authorDTOBuilder.buildAuthorDTO();
+        Author expectedAuthor = authorMapper.toModel(authorDTOToremove);
+
+        Long expectedDeletedId = authorDTOToremove.getId();
+        doNothing().when(authorRepository).deleteById(expectedDeletedId);
+        when(authorRepository.findById(expectedDeletedId)).thenReturn(Optional.of(expectedAuthor));
+        authorService.delete(expectedDeletedId);
+
+        verify(authorRepository, times(1)).deleteById(expectedDeletedId);
+        verify(authorRepository, times(1)).findById(expectedDeletedId);
+    }
+
+    @Test
+    void whenInvalidAuthorIdIsGivenThenAnExceptionShouldBeThrown() {
+        var expectedInvalidID = 2L;
+
+        when(authorRepository.findById(expectedInvalidID))
+                .thenReturn(Optional.empty());
+
+        assertThrows(AuthorNotFoundException.class, ()-> authorService.delete(expectedInvalidID));
+
 
     }
 

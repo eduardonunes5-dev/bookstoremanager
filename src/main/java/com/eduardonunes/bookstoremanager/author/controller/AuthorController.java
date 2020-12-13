@@ -36,4 +36,10 @@ public class AuthorController implements AuthorControllerDocs{
     public List<AuthorDTO> findAll(){
         return this.authorService.findAll();
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable("id") Long authorId){
+        this.authorService.delete(authorId);
+    }
 }
