@@ -106,7 +106,7 @@ public class AuthorServiceTest {
 
     @Test
     void whenInvalidAuthorIdIsGivenThenAnExceptionShouldBeThrown() {
-        var expectedInvalidID = 2L;
+        Long expectedInvalidID = 2L;
 
         when(authorRepository.findById(expectedInvalidID))
                 .thenReturn(Optional.empty());
