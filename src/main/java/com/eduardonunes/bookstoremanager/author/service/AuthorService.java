@@ -27,7 +27,6 @@ public class AuthorService {
     public AuthorDTO create(AuthorDTO authorDTO){
         verifyIfExists(authorDTO);
         Author authorToCreate = authorMapper.toModel(authorDTO);
-        System.out.println(authorToCreate);
         Author createdAuthor = this.authorRepository.save(authorToCreate);
         return authorMapper.toDto(createdAuthor);
     }
