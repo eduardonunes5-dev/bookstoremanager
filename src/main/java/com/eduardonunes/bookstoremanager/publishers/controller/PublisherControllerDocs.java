@@ -14,14 +14,14 @@ import java.util.List;
 public interface PublisherControllerDocs {
 
     @ApiOperation(value = "Creates a publisher in the database")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Publisher created successfully"),
             @ApiResponse(code = 400, message = "Publisher missing fields, wrong field range or already exists")
     })
     PublisherDTO create(PublisherDTO publisherDTO);
 
     @ApiOperation(value = "Retrieves a publisher in the database")
-    @ApiResponses(value ={
+    @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Publisher found successfully"),
             @ApiResponse(code = 404, message = "Publisher not found")
     })
