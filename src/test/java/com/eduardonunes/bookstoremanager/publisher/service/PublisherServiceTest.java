@@ -16,10 +16,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -86,4 +89,27 @@ public class PublisherServiceTest {
 
         assertThrows(PublisherNotFoundException.class, ()-> publisherService.findById(id));
     }
+
+    @Test
+    void whenFindAllThenReturnAllPublisherRecords() {
+        PublisherDTO publisherDTO = publisherDTOBuilder.buildPublisherDTO();
+        Publisher publisher = publisherMapper.toModel(publisherDTO);
+
+        when(publisherRepository.findAll()).thenReturn(Collections.singletonList(publisher));
+
+        List<PublisherDTO> foundList = publisherService.findAll();
+
+        assertThat(foundList.size(), is(1));
+        assertThat(foundList.get(0), is(publisherDTO));
+    }
+
+    @Test
+    void whenFindAllThenReturnEmptyList() {
+        when(publisherRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<PublisherDTO> foundList = publisherService.findAll();
+
+        assertThat(foundList.size(), is(0));
+    }
+
 }

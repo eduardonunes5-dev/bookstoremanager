@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.List;
+
 
 @Api("Publisher management")
 public interface PublisherControllerDocs {
@@ -24,4 +26,8 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 404, message = "Publisher not found")
     })
     PublisherDTO findById(Long id);
+
+    @ApiOperation(value = "Retrieves all publishers in the database")
+    @ApiResponse(code = 200, message = "Returns all publishers")
+    List<PublisherDTO> findAll();
 }

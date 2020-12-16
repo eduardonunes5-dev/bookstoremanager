@@ -9,6 +9,9 @@ import com.eduardonunes.bookstoremanager.publishers.repository.PublisherReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class PublisherService {
 
@@ -32,6 +35,14 @@ public class PublisherService {
 
     public PublisherDTO findById(Long id){
         return verifyAndGetPublisher(id);
+
+    }
+
+    public List<PublisherDTO> findAll(){
+        return publisherRepository.findAll()
+                .stream()
+                .map( pub -> mapper.toDTO(pub))
+                .collect(Collectors.toList());
 
     }
 
