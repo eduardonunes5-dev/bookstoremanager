@@ -4,7 +4,6 @@ import com.eduardonunes.bookstoremanager.publisher.builder.PublisherDTOBuilder;
 import com.eduardonunes.bookstoremanager.publishers.dto.PublisherDTO;
 import com.eduardonunes.bookstoremanager.publishers.entity.Publisher;
 import com.eduardonunes.bookstoremanager.publishers.exception.PublisherAlreadyExistsException;
-import com.eduardonunes.bookstoremanager.publishers.exception.PublisherNotFoundException;
 import com.eduardonunes.bookstoremanager.publishers.mapper.PublisherMapper;
 import com.eduardonunes.bookstoremanager.publishers.repository.PublisherRepository;
 import com.eduardonunes.bookstoremanager.publishers.service.PublisherService;
@@ -64,26 +63,5 @@ public class PublisherServiceTest {
                 .thenReturn(Optional.of(toBeSavedModel));
 
         assertThrows(PublisherAlreadyExistsException.class, ()-> publisherService.create(toBeSaved));
-    }
-
-    @Test
-    void whenAValidIdIsPassedThenAPublisherShouldBeReturned() {
-        PublisherDTO publisherDTO = publisherDTOBuilder.buildPublisherDTO();
-        Publisher expected = publisherMapper.toModel(publisherDTO);
-
-        when(publisherRepository.findById(publisherDTO.getId())).thenReturn(Optional.of(expected));
-
-        PublisherDTO found = publisherService.findById(publisherDTO.getId());
-
-        assertThat(publisherDTO, Is.is(found));
-    }
-
-    @Test
-    void whenAnInvalidIdIsPassedThenAPublisherShouldBeReturned() {
-        Long id = 1L;
-
-        when(publisherRepository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(PublisherNotFoundException.class, ()-> publisherService.findById(id));
     }
 }

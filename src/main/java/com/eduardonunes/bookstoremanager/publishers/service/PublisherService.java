@@ -1,6 +1,5 @@
 package com.eduardonunes.bookstoremanager.publishers.service;
 
-import com.eduardonunes.bookstoremanager.publishers.exception.PublisherNotFoundException;
 import com.eduardonunes.bookstoremanager.publishers.dto.PublisherDTO;
 import com.eduardonunes.bookstoremanager.publishers.entity.Publisher;
 import com.eduardonunes.bookstoremanager.publishers.exception.PublisherAlreadyExistsException;
@@ -28,18 +27,6 @@ public class PublisherService {
         Publisher saved = this.publisherRepository.save(toSave);
         return mapper.toDTO(saved);
 
-    }
-
-    public PublisherDTO findById(Long id){
-        return verifyAndGetPublisher(id);
-
-    }
-
-    private PublisherDTO verifyAndGetPublisher(Long id) {
-        PublisherDTO publisher = publisherRepository.findById(id)
-                .map( p -> mapper.toDTO(p))
-                .orElseThrow(()-> new PublisherNotFoundException(id));
-        return publisher;
     }
 
     private void verifyIfExists(String code, String name){
