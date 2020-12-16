@@ -78,4 +78,18 @@ public class PublisherControllerTest {
 
 
     }
+
+    @Test
+    void whenGETValidIdIsGivenThenAPublisherShouldBeReturned() throws Exception {
+        PublisherDTO expectedDTO = publisherDTOBuilder.buildPublisherDTO();
+
+        Mockito.when(publisherService.findById(expectedDTO.getId())).thenReturn(expectedDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(PUBLISHERS_API_URL_TEST + "/" + expectedDTO.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(expectedDTO.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(expectedDTO.getName())))
+                .andExpect(jsonPath("$.code", is(expectedDTO.getCode())));
+    }
 }
