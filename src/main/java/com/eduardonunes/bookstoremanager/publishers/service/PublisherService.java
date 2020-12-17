@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class PublisherService {
 
-    private final static PublisherMapper mapper = PublisherMapper.INSTANCE;
+    private static final PublisherMapper mapper = PublisherMapper.INSTANCE;
 
     private PublisherRepository publisherRepository;
 
