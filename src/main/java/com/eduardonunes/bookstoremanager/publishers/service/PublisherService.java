@@ -47,14 +47,10 @@ public class PublisherService {
     }
 
     public void removeById(Long id){
-        verifyIfExists(id);
+        verifyAndGetPublisher(id);
         publisherRepository.deleteById(id);
     }
 
-    private void verifyIfExists(Long id) {
-        publisherRepository.findById(id)
-                .orElseThrow(()-> new PublisherNotFoundException(id));
-    }
 
     private PublisherDTO verifyAndGetPublisher(Long id) {
         PublisherDTO publisher = publisherRepository.findById(id)
