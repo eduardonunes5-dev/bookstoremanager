@@ -1,5 +1,9 @@
 package com.eduardonunes.bookstoremanager.users.service;
 
+import com.eduardonunes.bookstoremanager.users.dto.MessageDTO;
+import com.eduardonunes.bookstoremanager.users.dto.UserDTO;
+import com.eduardonunes.bookstoremanager.users.entity.User;
+import com.eduardonunes.bookstoremanager.users.exception.UserAlreadyExistsException;
 import com.eduardonunes.bookstoremanager.users.mapper.UserMapper;
 import com.eduardonunes.bookstoremanager.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,5 +19,27 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+
+    public MessageDTO create(UserDTO userDTO){
+        verifyIfExists(userDTO.getUsername(), userDTO.getEmail());
+
+        User toSave = userMapper.toModel(userDTO);
+        User savedUser = userRepository.save(toSave);
+        return createMEssage(savedUser);
+    }
+
+    private void verifyIfExists(String username, String email) {
+        userRepository.findByUsernameOrEmail(username, email)
+                .ifPresent((user)-> {throw new UserAlreadyExistsException(username, email);});
+    }
+
+    private MessageDTO createMEssage(User saved) {
+        Long savedUserID = saved.getId();
+        MessageDTO msg = MessageDTO.builder()
+                .message(String.format("User with id %s created successfully", savedUserID))
+                .build();
+        return msg;
     }
 }
