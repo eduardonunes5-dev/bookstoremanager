@@ -3,7 +3,6 @@ package com.eduardonunes.bookstoremanager.publisher.controller;
 import com.eduardonunes.bookstoremanager.publisher.builder.PublisherDTOBuilder;
 import com.eduardonunes.bookstoremanager.publishers.controller.PublisherController;
 import com.eduardonunes.bookstoremanager.publishers.dto.PublisherDTO;
-import com.eduardonunes.bookstoremanager.publishers.entity.Publisher;
 import com.eduardonunes.bookstoremanager.publishers.service.PublisherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.web.JsonPath;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -109,5 +107,16 @@ public class PublisherControllerTest {
                 .andExpect(jsonPath("$[0].name", is(publisherDTO.getName())))
                 .andExpect(jsonPath("$[0].code", is(publisherDTO.getCode())));
 
+    }
+
+    @Test
+    void whenDELETEWithValidIdThenNoContentShouldBeReturned() throws Exception{
+        Long id = 1L;
+
+        Mockito.doNothing().when(publisherService).removeById(id);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(PUBLISHERS_API_URL_TEST + '/' + id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }

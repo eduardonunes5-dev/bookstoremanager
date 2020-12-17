@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class PublisherService {
 
-    private final static PublisherMapper mapper = PublisherMapper.INSTANCE;
+    private static final PublisherMapper mapper = PublisherMapper.INSTANCE;
 
     private PublisherRepository publisherRepository;
 
@@ -45,6 +45,12 @@ public class PublisherService {
                 .collect(Collectors.toList());
 
     }
+
+    public void removeById(Long id){
+        verifyAndGetPublisher(id);
+        publisherRepository.deleteById(id);
+    }
+
 
     private PublisherDTO verifyAndGetPublisher(Long id) {
         PublisherDTO publisher = publisherRepository.findById(id)

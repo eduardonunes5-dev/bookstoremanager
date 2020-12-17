@@ -24,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PublisherServiceTest {
@@ -112,4 +112,26 @@ public class PublisherServiceTest {
         assertThat(foundList.size(), is(0));
     }
 
+    @Test
+    void whenRemoveByIdThenRemoveIt() {
+        PublisherDTO publisherDTOToRemove = publisherDTOBuilder.buildPublisherDTO();
+        Publisher toRemove = publisherMapper.toModel(publisherDTOToRemove);
+        Long publisherToRemoveId = toRemove.getId();
+
+        doNothing().when(publisherRepository).deleteById(publisherToRemoveId);
+        when(publisherRepository.findById(publisherToRemoveId)).thenReturn(Optional.of(toRemove));
+        publisherService.removeById(publisherToRemoveId);
+
+        verify(publisherRepository, times(1)).deleteById(publisherToRemoveId);
+        verify(publisherRepository, times(1)).findById(publisherToRemoveId);
+    }
+
+    @Test
+    void whenRemoveByIdWithInvalidIdThenThrowAnException() {
+        Long publisherToRemoveId = 1L;
+
+        when(publisherRepository.findById(publisherToRemoveId)).thenReturn(Optional.empty());
+
+        assertThrows(PublisherNotFoundException.class, () -> publisherService.removeById(publisherToRemoveId));
+    }
 }
