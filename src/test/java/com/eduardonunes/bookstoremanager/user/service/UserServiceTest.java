@@ -5,6 +5,7 @@ import com.eduardonunes.bookstoremanager.users.dto.MessageDTO;
 import com.eduardonunes.bookstoremanager.users.dto.UserDTO;
 import com.eduardonunes.bookstoremanager.users.entity.User;
 import com.eduardonunes.bookstoremanager.users.exception.UserAlreadyExistsException;
+import com.eduardonunes.bookstoremanager.users.exception.UserNotFoundException;
 import com.eduardonunes.bookstoremanager.users.mapper.UserMapper;
 import com.eduardonunes.bookstoremanager.users.repository.UserRepository;
 import com.eduardonunes.bookstoremanager.users.service.UserService;
@@ -20,7 +21,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -69,5 +70,29 @@ public class UserServiceTest {
                 .thenReturn(Optional.of(expectedDuplicatedUser));
 
         assertThrows(UserAlreadyExistsException.class, ()-> userService.create(userDTOToBeSaved));
+    }
+
+    @Test
+    void whenExistingUserThenDeleteIt(){
+        UserDTO userDTOToRemove = userDTOBuilder.buildUserDTO();
+        User userToRemove = userMapper.toModel(userDTOToRemove);
+        Long userToRemoveId = userDTOToRemove.getId();
+
+        when(userRepository.findById(userToRemoveId)).thenReturn(Optional.of(userToRemove));
+        doNothing().when(userRepository).deleteById(userToRemoveId);
+        userService.deleteById(userToRemoveId);
+
+        verify(userRepository, times(1)).deleteById(userToRemoveId);
+        verify(userRepository, times(1)).findById(userToRemoveId);
+
+    }
+
+    @Test
+    void whenNotExistingUserThenThrowAnException(){
+        Long userToRemoveId = 2L;
+
+        when(userRepository.findById(userToRemoveId)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.deleteById(userToRemoveId));
     }
 }

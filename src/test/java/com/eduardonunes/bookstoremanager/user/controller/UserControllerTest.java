@@ -1,9 +1,11 @@
 package com.eduardonunes.bookstoremanager.user.controller;
 
+import com.eduardonunes.bookstoremanager.exception.BookStoreExceptionHandler;
 import com.eduardonunes.bookstoremanager.user.builder.UserDTOBuilder;
 import com.eduardonunes.bookstoremanager.users.controller.UserController;
 import com.eduardonunes.bookstoremanager.users.dto.MessageDTO;
 import com.eduardonunes.bookstoremanager.users.dto.UserDTO;
+import com.eduardonunes.bookstoremanager.users.exception.UserNotFoundException;
 import com.eduardonunes.bookstoremanager.users.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import static com.eduardonunes.bookstoremanager.utils.JsonConversionUtils.asJsonString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +43,7 @@ public class UserControllerTest {
         userDTOBuilder = UserDTOBuilder.builder().build();
         mockMvc = MockMvcBuilders.standaloneSetup(userController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .setControllerAdvice(BookStoreExceptionHandler.class)
                 .setViewResolvers((s,v) -> new MappingJackson2JsonView())
                 .build();
     }
@@ -71,5 +74,29 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(expectedInvalidUser)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDELETEWithValidIdThenNoContentShouldBeReturned() throws Exception {
+        UserDTO userDTO = userDTOBuilder.buildUserDTO();
+        Long userDTOIdToRemove = userDTO.getId();
+
+        doNothing().when(userService).deleteById(userDTOIdToRemove);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(USERS_TEST_URI + '/' + userDTOIdToRemove)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void whenDELETEWithInvalidIdThenAnExceptionShouldBeThrown() throws Exception {
+        UserDTO userDTO = userDTOBuilder.buildUserDTO();
+        Long userDTOIdToRemove = userDTO.getId();
+
+        doThrow(UserNotFoundException.class).when(userService).deleteById(userDTOIdToRemove);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(USERS_TEST_URI + '/' + userDTOIdToRemove)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
