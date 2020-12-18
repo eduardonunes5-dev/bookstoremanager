@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Api("User management")
 public interface UserControllerDocs {
@@ -17,4 +18,11 @@ public interface UserControllerDocs {
             @ApiResponse(code = 400, message = "Missing required fields/field validation errors")
     })
     MessageDTO create(UserDTO userDTO);
+
+    @ApiOperation(value ="User deletion by id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "User deleted successfully"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    void deleteById(Long id);
 }
