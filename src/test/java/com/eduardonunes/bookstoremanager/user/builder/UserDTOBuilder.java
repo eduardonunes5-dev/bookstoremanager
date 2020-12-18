@@ -10,19 +10,19 @@ import java.time.LocalDate;
 public class UserDTOBuilder {
 
     @Builder.Default
-    private final Long id = 1L;
+    private final long id = 1L;
 
     @Builder.Default
     private final String name = "user mock";
 
     @Builder.Default
-    private final Integer age = 20;
+    private final int age = 20;
 
     @Builder.Default
     private final Gender gender = Gender.MALE;
 
     @Builder.Default
-    private final String email = "email@.com";
+    private final String email = "email@test.com";
 
     @Builder.Default
     private final String username = "edu";

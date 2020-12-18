@@ -2,20 +2,30 @@ package com.eduardonunes.bookstoremanager.user.controller;
 
 import com.eduardonunes.bookstoremanager.user.builder.UserDTOBuilder;
 import com.eduardonunes.bookstoremanager.users.controller.UserController;
+import com.eduardonunes.bookstoremanager.users.dto.MessageDTO;
+import com.eduardonunes.bookstoremanager.users.dto.UserDTO;
 import com.eduardonunes.bookstoremanager.users.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import static com.eduardonunes.bookstoremanager.utils.JsonConversionUtils.asJsonString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
 
+    private static final String USERS_TEST_URI = "/api/v1/users";
     private UserDTOBuilder userDTOBuilder;
 
     @Mock
@@ -33,5 +43,33 @@ public class UserControllerTest {
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers((s,v) -> new MappingJackson2JsonView())
                 .build();
+    }
+
+    @Test
+    void whenPOSTValidUserThenCreatedShouldBeReturn() throws Exception {
+        UserDTO expectedCreatedUserDTO = userDTOBuilder.buildUserDTO();
+
+        Long savedUserID = expectedCreatedUserDTO.getId();
+        MessageDTO expectedMessage = MessageDTO.builder()
+                .message(String.format("User with id %s created successfully", savedUserID))
+                .build();
+
+        when(userService.create(expectedCreatedUserDTO)).thenReturn(expectedMessage);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(USERS_TEST_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(expectedCreatedUserDTO)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void whenPOSTInvalidFieldThenBadRequestShouldBeReturned() throws Exception {
+        UserDTO expectedInvalidUser = userDTOBuilder.buildUserDTO();
+        expectedInvalidUser.setUsername(null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(USERS_TEST_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(expectedInvalidUser)))
+                .andExpect(status().isBadRequest());
     }
 }
