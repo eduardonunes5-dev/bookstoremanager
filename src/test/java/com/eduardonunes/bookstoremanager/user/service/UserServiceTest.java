@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -27,6 +28,9 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
 
     private final UserMapper userMapper = UserMapper.INSTANCE;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private UserRepository userRepository;
@@ -49,7 +53,7 @@ public class UserServiceTest {
         String toBeSavedUsername = userToBeSaved.getUsername();
         String toBeSavedEmail = userToBeSaved.getEmail();
         when(userRepository.findByUsernameOrEmail(toBeSavedUsername, toBeSavedEmail)).thenReturn(Optional.empty());
-
+        when(passwordEncoder.encode(userToBeSaved.getPassword())).thenReturn(userToBeSaved.getPassword());
         when(userRepository.save(userToBeSaved)).thenReturn(userToBeSaved);
 
         MessageDTO returnMessage = userService.create(userDTOToBeSaved);
@@ -106,6 +110,7 @@ public class UserServiceTest {
         User toUpdate = userMapper.toModel(userDTOToUpdate);
 
         when(userRepository.findById(userToUpdateId)).thenReturn(Optional.of(toUpdate));
+        when(passwordEncoder.encode(toUpdate.getPassword())).thenReturn(toUpdate.getPassword());
         when(userRepository.save(toUpdate)).thenReturn(toUpdate);
 
         MessageDTO msg = userService.update(userToUpdateId, userDTOToUpdate);

@@ -8,6 +8,7 @@ import com.eduardonunes.bookstoremanager.users.exception.UserNotFoundException;
 import com.eduardonunes.bookstoremanager.users.mapper.UserMapper;
 import com.eduardonunes.bookstoremanager.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,11 +21,14 @@ public class UserService {
 
     private static final UserMapper userMapper = UserMapper.INSTANCE;
 
+    private PasswordEncoder passwordEncoder;
+
     private UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -32,6 +36,7 @@ public class UserService {
         verifyIfExists(userDTO.getUsername(), userDTO.getEmail());
 
         User toSave = userMapper.toModel(userDTO);
+        toSave.setPassword(passwordEncoder.encode(toSave.getPassword()));
         User savedUser = userRepository.save(toSave);
         return creationMessage(savedUser);
     }
@@ -47,6 +52,7 @@ public class UserService {
 
         User toUpdate = userMapper.toModel(userToUpdateDTO);
         toUpdate.setCreatedDate(foundUser.getCreatedDate());
+        toUpdate.setPassword(passwordEncoder.encode(toUpdate.getPassword()));
 
         User updatedUser = userRepository.save(toUpdate);
         return updationMessage(updatedUser);
