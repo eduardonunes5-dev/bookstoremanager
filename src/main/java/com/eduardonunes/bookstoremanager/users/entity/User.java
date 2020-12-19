@@ -3,6 +3,7 @@ package com.eduardonunes.bookstoremanager.users.entity;
 
 import com.eduardonunes.bookstoremanager.books.entity.Book;
 import com.eduardonunes.bookstoremanager.entity.Auditable;
+import com.eduardonunes.bookstoremanager.users.enums.Gender;
 import lombok.Data;
 
 import javax.persistence.*;

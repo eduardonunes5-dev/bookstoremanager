@@ -1,7 +1,7 @@
 package com.eduardonunes.bookstoremanager.user.builder;
 
 import com.eduardonunes.bookstoremanager.users.dto.UserDTO;
-import com.eduardonunes.bookstoremanager.users.entity.Gender;
+import com.eduardonunes.bookstoremanager.users.enums.Gender;
 import lombok.Builder;
 
 import java.time.LocalDate;

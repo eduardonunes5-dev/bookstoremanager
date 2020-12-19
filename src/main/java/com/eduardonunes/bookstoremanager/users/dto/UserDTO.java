@@ -1,6 +1,6 @@
 package com.eduardonunes.bookstoremanager.users.dto;
 
-import com.eduardonunes.bookstoremanager.users.entity.Gender;
+import com.eduardonunes.bookstoremanager.users.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
