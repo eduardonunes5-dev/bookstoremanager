@@ -25,4 +25,12 @@ public interface UserControllerDocs {
             @ApiResponse(code = 404, message = "User not found")
     })
     void deleteById(Long id);
+
+    @ApiOperation(value = "Updates user by id operation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "User updated successfully"),
+            @ApiResponse(code = 400, message = "Missing required fields or malformed data"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    MessageDTO update(Long id, UserDTO userDTO);
 }

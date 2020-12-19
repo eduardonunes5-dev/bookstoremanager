@@ -7,6 +7,7 @@ import com.eduardonunes.bookstoremanager.users.dto.MessageDTO;
 import com.eduardonunes.bookstoremanager.users.dto.UserDTO;
 import com.eduardonunes.bookstoremanager.users.exception.UserNotFoundException;
 import com.eduardonunes.bookstoremanager.users.service.UserService;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import static com.eduardonunes.bookstoremanager.utils.JsonConversionUtils.asJsonString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -98,5 +102,22 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete(USERS_TEST_URI + '/' + userDTOIdToRemove)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenPUTWithValidUserThenOkShouldBeReturned() throws Exception{
+        UserDTO userToUpdate = userDTOBuilder.buildUserDTO();
+        Long userToUpdateId = userToUpdate.getId();
+        userToUpdate.setUsername("dudu");
+
+        String msg = String.format("User with id %d updated successfully", userToUpdateId);
+        MessageDTO  messageDTO = MessageDTO.builder().message(msg).build();
+        when(userService.update(userToUpdateId, userToUpdate)).thenReturn(messageDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.put(USERS_TEST_URI + '/' + userToUpdateId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userToUpdate)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is(equalTo(msg))));
     }
 }
