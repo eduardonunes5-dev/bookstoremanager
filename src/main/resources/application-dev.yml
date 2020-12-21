@@ -18,3 +18,7 @@ logging:
     br:
       com:
         eduardonunes: DEBUG
+
+jwt:
+  secret: bookstoremanager123
+  validity: 18000
