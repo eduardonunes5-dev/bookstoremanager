@@ -51,11 +51,10 @@ public class JwtTokenManager {
     }
 
     private Claims getClaimsForToken(String token) {
-        Claims claims = Jwts.parser()
+        return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
-        return claims;
     }
 
     private String doGenerateToken(UserDetails userDetails, Map<String, Object> claims) {
