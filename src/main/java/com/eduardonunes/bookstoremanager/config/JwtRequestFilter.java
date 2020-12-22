@@ -19,15 +19,18 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    AuthenticationService authenticationService;
 
     @Autowired
-    JwtTokenManager jwtTokenManager;
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private JwtTokenManager jwtTokenManager;
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
-        String username = "";
-        String jwtToken = "";
+        String username = null;
+        String jwtToken = null;
         String reqTokenHeader = req.getHeader("Authorization");
         if(isTokenPresent(reqTokenHeader)){
             jwtToken = reqTokenHeader.substring(7);
