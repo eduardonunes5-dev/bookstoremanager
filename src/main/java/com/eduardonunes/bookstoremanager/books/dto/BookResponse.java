@@ -23,9 +23,9 @@ public class BookResponse {
 
     private String isbn;
 
-    private Long pages;
+    private Integer pages;
 
-    private Long chapters;
+    private Integer chapters;
 
     private AuthorDTO author;
 
