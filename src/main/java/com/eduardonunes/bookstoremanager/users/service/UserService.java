@@ -68,4 +68,9 @@ public class UserService {
         userRepository.findByUsernameOrEmail(username, email)
                 .ifPresent((p)-> {throw new UserAlreadyExistsException(username, email);});
     }
+
+    public User verifyAndGetUserIfExists(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(()-> new UserNotFoundException(username));
+    }
 }

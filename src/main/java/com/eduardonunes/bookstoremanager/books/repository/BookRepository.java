@@ -1,9 +1,14 @@
 package com.eduardonunes.bookstoremanager.books.repository;
 
 import com.eduardonunes.bookstoremanager.books.entity.Book;
+import com.eduardonunes.bookstoremanager.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
+
+    Optional<Book> findByNameAndIsbnAndUser(String name, String isbn, User user);
 }

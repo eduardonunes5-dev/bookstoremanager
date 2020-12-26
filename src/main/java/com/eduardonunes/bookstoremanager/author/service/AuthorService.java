@@ -32,7 +32,7 @@ public class AuthorService {
     }
 
     public AuthorDTO findById(Long id){
-        Author author = verifyAndGetAuthor(id);
+        Author author = verifyAndGetIfExists(id);
         return authorMapper.toDto(author);
     }
 
@@ -44,11 +44,11 @@ public class AuthorService {
     }
 
     public void delete(Long id){
-        verifyAndGetAuthor(id);
+        verifyAndGetIfExists(id);
         authorRepository.deleteById(id);
     }
 
-    private Author verifyAndGetAuthor(Long id) {
+    public Author verifyAndGetIfExists(Long id) {
         Author author = this.authorRepository.findById(id)
                 .orElseThrow(()->new AuthorNotFoundException(id));
         return author;
@@ -59,4 +59,5 @@ public class AuthorService {
         authorRepository.findByName(authorDTO.getName())
                 .ifPresent(author ->{throw new AuthorAlreadyExistsException(author.getName());});
     }
+
 }

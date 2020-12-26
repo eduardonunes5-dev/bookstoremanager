@@ -34,6 +34,7 @@ public class BookResponseDTOBuilder {
     @Builder.Default
     private final PublisherDTO publisher = PublisherDTOBuilder.builder().build().buildPublisherDTO();
 
+    @Builder.Default
     private final UserDTO userDTO = UserDTOBuilder.builder().build().buildUserDTO();
 
 
