@@ -19,11 +19,15 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtTokenManager jwtTokenManager;
+
+    @Autowired
+    private void setAuthenticationManager(AuthenticationManager authenticationManager){
+        this.authenticationManager = authenticationManager;
+    }
 
 
     public JwtResponse createAuthenticationToken(JwtRequest jwtRequest){
