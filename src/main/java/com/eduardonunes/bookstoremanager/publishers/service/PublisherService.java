@@ -47,7 +47,7 @@ public class PublisherService {
     }
 
     public void removeById(Long id){
-        verifyAndGetPublisher(id);
+        verifyAndGetIfExists(id);
         publisherRepository.deleteById(id);
     }
 
@@ -62,5 +62,10 @@ public class PublisherService {
     private void verifyIfExists(String code, String name){
         publisherRepository.findByCodeOrName(code, name)
                 .ifPresent( publisher -> {throw new PublisherAlreadyExistsException(publisher.getCode(),publisher.getName());});
+    }
+
+    public Publisher verifyAndGetIfExists(Long publisherId) {
+        return publisherRepository.findById(publisherId)
+                .orElseThrow(()-> new PublisherNotFoundException(publisherId));
     }
 }
