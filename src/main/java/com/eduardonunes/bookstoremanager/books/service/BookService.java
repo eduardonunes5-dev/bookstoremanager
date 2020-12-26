@@ -6,6 +6,7 @@ import com.eduardonunes.bookstoremanager.books.dto.BookRequest;
 import com.eduardonunes.bookstoremanager.books.dto.BookResponse;
 import com.eduardonunes.bookstoremanager.books.entity.Book;
 import com.eduardonunes.bookstoremanager.books.exception.BookAlreadyExistsException;
+import com.eduardonunes.bookstoremanager.books.exception.BookNotFoundException;
 import com.eduardonunes.bookstoremanager.books.mapper.BookMapper;
 import com.eduardonunes.bookstoremanager.books.repository.BookRepository;
 import com.eduardonunes.bookstoremanager.publishers.entity.Publisher;
@@ -46,6 +47,14 @@ public class BookService {
         Book savedBook = bookRepository.save(bookToSave);
 
         return bookMapper.toDTO(savedBook);
+    }
+
+    public BookResponse findBookByIdAndUser(AuthenticatedUser authenticatedUser, Long bookId){
+        User authUser = userService.verifyAndGetUserIfExists(authenticatedUser.getUsername());
+        return bookRepository.findByIdAndUser(bookId, authUser)
+                .map(book -> bookMapper.toDTO(book))
+                .orElseThrow(()-> new BookNotFoundException(bookId));
+
     }
 
     private void verifyIfBookExistsByUser(BookRequest bookRequestDTO, User authUser) {

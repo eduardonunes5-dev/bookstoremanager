@@ -21,4 +21,11 @@ public interface BookControllerDocs {
             @ApiResponse(code = 400, message = "Missing required fields, wrong field range value or book already exists")
     })
     BookResponse create(AuthenticatedUser authenticatedUser, BookRequest bookRequest);
+
+    @ApiOperation(value = "Finds a book by its id and user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Book found successfully"),
+            @ApiResponse(code = 404, message = "Book not found")
+    })
+    BookResponse findBookByIdAndUser(AuthenticatedUser authenticatedUser, Long bookId);
 }

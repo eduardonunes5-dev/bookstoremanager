@@ -91,4 +91,22 @@ public class BookControllerTest {
                 .andExpect(status().isBadRequest());
 
     }
+
+    @Test
+    void whenGETBookWithValidIdAndUserThenOKShouldBeReturned() throws Exception {
+
+        BookRequest bookRequest = bookRequestDTOBuilder.buildBookRequestDTO();
+        BookResponse expectedBookResponse = bookResponseDTOBuilder.buildBookResponse();
+
+        when(bookService.findBookByIdAndUser(any(AuthenticatedUser.class), eq(bookRequest.getId())))
+                .thenReturn(expectedBookResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(BOOK_API_URL_TEST + '/' + bookRequest.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isbn",is(expectedBookResponse.getIsbn())))
+                .andExpect(jsonPath("$.name",is(expectedBookResponse.getName())))
+                .andExpect(jsonPath("$.chapters",is(expectedBookResponse.getChapters())));
+
+    }
 }

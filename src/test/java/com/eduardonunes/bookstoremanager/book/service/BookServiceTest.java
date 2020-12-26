@@ -8,6 +8,7 @@ import com.eduardonunes.bookstoremanager.books.dto.BookRequest;
 import com.eduardonunes.bookstoremanager.books.dto.BookResponse;
 import com.eduardonunes.bookstoremanager.books.entity.Book;
 import com.eduardonunes.bookstoremanager.books.exception.BookAlreadyExistsException;
+import com.eduardonunes.bookstoremanager.books.exception.BookNotFoundException;
 import com.eduardonunes.bookstoremanager.books.mapper.BookMapper;
 import com.eduardonunes.bookstoremanager.books.repository.BookRepository;
 import com.eduardonunes.bookstoremanager.books.service.BookService;
@@ -104,5 +105,31 @@ public class BookServiceTest {
 
         assertThrows(BookAlreadyExistsException.class, ()-> bookService.create(authenticatedUser,bookRequestDTO));
 
+    }
+
+    @Test
+    void whenValidUserAndBookIdThenABookShouldBeReturned() {
+        BookRequest bookRequest = bookRequestDTOBuilder.buildBookRequestDTO();
+        BookResponse expectedResponse = bookResponseDTOBuilder.buildBookResponse();
+        Book expectedFoundBook = bookMapper.toModel(expectedResponse);
+        Long bookId = bookRequest.getId();
+
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenReturn(new User());
+        when(bookRepository.findByIdAndUser(eq(bookId), any(User.class))).thenReturn(Optional.of(expectedFoundBook));
+
+        BookResponse foundResponse = bookService.findBookByIdAndUser(authenticatedUser, bookId);
+        assertThat(foundResponse, is(expectedResponse));
+
+    }
+
+    @Test
+    void whenNotExistingBookThenAnExceptionShouldBeThrown(){
+        BookRequest bookRequest = bookRequestDTOBuilder.buildBookRequestDTO();
+        Long bookId = bookRequest.getId();
+
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenReturn(new User());
+        when(bookRepository.findByIdAndUser(eq(bookId), any(User.class))).thenReturn(Optional.empty());
+
+        assertThrows(BookNotFoundException.class, () -> bookService.findBookByIdAndUser(authenticatedUser,bookId));
     }
 }
