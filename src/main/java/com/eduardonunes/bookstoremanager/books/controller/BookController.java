@@ -5,6 +5,7 @@ import com.eduardonunes.bookstoremanager.books.dto.BookRequest;
 import com.eduardonunes.bookstoremanager.books.dto.BookResponse;
 import com.eduardonunes.bookstoremanager.books.service.BookService;
 import com.eduardonunes.bookstoremanager.users.dto.AuthenticatedUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class BookController implements BookControllerDocs{
 
     private BookService bookService;
 
+    @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
