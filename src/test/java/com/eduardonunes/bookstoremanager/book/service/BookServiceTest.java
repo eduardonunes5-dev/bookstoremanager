@@ -16,6 +16,7 @@ import com.eduardonunes.bookstoremanager.publishers.entity.Publisher;
 import com.eduardonunes.bookstoremanager.publishers.service.PublisherService;
 import com.eduardonunes.bookstoremanager.users.dto.AuthenticatedUser;
 import com.eduardonunes.bookstoremanager.users.entity.User;
+import com.eduardonunes.bookstoremanager.users.exception.UserNotFoundException;
 import com.eduardonunes.bookstoremanager.users.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +35,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -131,5 +134,43 @@ public class BookServiceTest {
         when(bookRepository.findByIdAndUser(eq(bookId), any(User.class))).thenReturn(Optional.empty());
 
         assertThrows(BookNotFoundException.class, () -> bookService.findBookByIdAndUser(authenticatedUser,bookId));
+    }
+
+    @Test
+    void whenValidUserIsGivenThenAllOfTheirBooksShouldBeReturned(){
+        BookResponse expectedBookResponse = bookResponseDTOBuilder.buildBookResponse();
+        Book expectedBook = bookMapper.toModel(expectedBookResponse);
+
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenReturn(new User());
+        when(bookRepository.findAllByUser(any(User.class))).thenReturn(Collections.singletonList(expectedBook));
+
+        List<BookResponse> foundList = bookService.findBooksByUser(authenticatedUser);
+
+        assertThat(foundList.size(), is(1));
+        assertThat(foundList.get(0), is(expectedBookResponse));
+
+    }
+
+    @Test
+    void whenValidUserIsGivenThenEmptyListShouldBeReturned(){
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenReturn(new User());
+        when(bookRepository.findAllByUser(any(User.class))).thenReturn(Collections.EMPTY_LIST);
+
+        List<BookResponse> foundList = bookService.findBooksByUser(authenticatedUser);
+
+        assertThat(foundList.size(), is(0));
+    }
+
+
+
+
+    @Test
+    void whenInvalidUserIsGivenThenAllOfTheirBooksShouldBeReturned(){
+        BookResponse expectedBookResponse = bookResponseDTOBuilder.buildBookResponse();
+        Book expectedBook = bookMapper.toModel(expectedBookResponse);
+
+        when(userService.verifyAndGetUserIfExists(authenticatedUser.getUsername())).thenThrow(UserNotFoundException.class);
+
+        assertThrows(UserNotFoundException.class, ()-> bookService.findBooksByUser(authenticatedUser));
     }
 }

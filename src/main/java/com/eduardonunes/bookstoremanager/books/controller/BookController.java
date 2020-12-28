@@ -11,12 +11,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
 public class BookController implements BookControllerDocs{
 
-    private BookService bookService;
+    private final BookService bookService;
 
     @Autowired
     public BookController(BookService bookService) {
@@ -35,5 +36,11 @@ public class BookController implements BookControllerDocs{
     @ResponseStatus(HttpStatus.OK)
     public BookResponse findBookByIdAndUser(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long bookId) {
         return bookService.findBookByIdAndUser(authenticatedUser, bookId);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookResponse> findBooksByUser(@AuthenticationPrincipal AuthenticatedUser user) {
+        return bookService.findBooksByUser(user);
     }
 }
