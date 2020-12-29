@@ -41,4 +41,12 @@ public interface BookControllerDocs {
             @ApiResponse(code = 404, message = "Book not found")
     })
     void deleteByIdAndUser(AuthenticatedUser authenticatedUser,Long bookId);
+
+    @ApiOperation(value = "Book updation operation by user and id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Book updated successfully"),
+            @ApiResponse(code = 400, message = "Missing required fields/worng fields range"),
+            @ApiResponse(code = 404, message = "Book not found")
+    })
+    BookResponse updateByUserAndId(AuthenticatedUser authenticatedUser, BookRequest bookRequest, Long bookId);
 }

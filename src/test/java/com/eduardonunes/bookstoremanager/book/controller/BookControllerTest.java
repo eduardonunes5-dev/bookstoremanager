@@ -73,10 +73,10 @@ public class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(bookRequestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is(bookRequestDTO.getName())))
-                .andExpect(jsonPath("$.id", is(bookRequestDTO.getId().intValue())))
-                .andExpect(jsonPath("$.isbn", is(bookRequestDTO.getIsbn())))
-                .andExpect(jsonPath("$.chapters", is(bookRequestDTO.getChapters())));
+                .andExpect(jsonPath("$.name", is(expectedCreatedBook.getName())))
+                .andExpect(jsonPath("$.id", is(expectedCreatedBook.getId().intValue())))
+                .andExpect(jsonPath("$.isbn", is(expectedCreatedBook.getIsbn())))
+                .andExpect(jsonPath("$.chapters", is(expectedCreatedBook.getChapters())));
 
     }
 
@@ -135,5 +135,23 @@ public class BookControllerTest {
         mockMvc.perform(delete(BOOK_API_URL_TEST + '/' + bookId.intValue())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void whenPUTIsCalledThenOkStatusShouldBeReturned() throws Exception{
+        BookRequest bookRequestDTO = bookRequestDTOBuilder.buildBookRequestDTO();
+        BookResponse expectedCreatedBook = bookResponseDTOBuilder.buildBookResponse();
+
+        when(bookService.updateByUserAndId(any(AuthenticatedUser.class), eq(bookRequestDTO), eq(expectedCreatedBook.getId()))).thenReturn(expectedCreatedBook);
+
+        mockMvc.perform(put(BOOK_API_URL_TEST + '/' + expectedCreatedBook.getId().intValue())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(bookRequestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(expectedCreatedBook.getName())))
+                .andExpect(jsonPath("$.id", is(expectedCreatedBook.getId().intValue())))
+                .andExpect(jsonPath("$.isbn", is(expectedCreatedBook.getIsbn())))
+                .andExpect(jsonPath("$.chapters", is(expectedCreatedBook.getChapters())));
+
     }
 }
