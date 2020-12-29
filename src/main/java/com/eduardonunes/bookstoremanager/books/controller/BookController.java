@@ -43,4 +43,10 @@ public class BookController implements BookControllerDocs{
     public List<BookResponse> findBooksByUser(@AuthenticationPrincipal AuthenticatedUser user) {
         return bookService.findBooksByUser(user);
     }
+
+    @DeleteMapping("/{bookId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteByIdAndUser(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long bookId) {
+        bookService.deleteByIdAndUser(authenticatedUser, bookId);
+    }
 }

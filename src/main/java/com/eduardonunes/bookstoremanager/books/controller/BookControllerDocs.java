@@ -7,6 +7,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -32,4 +34,11 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "Books by user found successfully")
     })
     List<BookResponse> findBooksByUser(AuthenticatedUser user);
+
+    @ApiOperation(value = "Book deletion by id and user operation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Book deleted successfully"),
+            @ApiResponse(code = 404, message = "Book not found")
+    })
+    void deleteByIdAndUser(AuthenticatedUser authenticatedUser,Long bookId);
 }
