@@ -6,6 +6,7 @@ import com.eduardonunes.bookstoremanager.users.dto.JwtResponse;
 import com.eduardonunes.bookstoremanager.users.entity.User;
 import com.eduardonunes.bookstoremanager.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,14 +17,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService implements UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private JwtTokenManager jwtTokenManager;
+
+    public AuthenticationService(UserRepository userRepository, @Lazy AuthenticationManager authenticationManager, JwtTokenManager jwtTokenManager) {
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenManager = jwtTokenManager;
+    }
 
     public JwtResponse createAuthenticationToken(JwtRequest jwtRequest){
         String username = jwtRequest.getUsername();
