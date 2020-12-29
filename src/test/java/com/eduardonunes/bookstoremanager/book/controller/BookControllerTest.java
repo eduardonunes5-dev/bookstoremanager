@@ -26,9 +26,9 @@ import static com.eduardonunes.bookstoremanager.utils.JsonConversionUtils.asJson
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -123,5 +123,17 @@ public class BookControllerTest {
                 .andExpect(jsonPath("$[0].id",is(expectedReturnedBook.getId().intValue())));
 
 
+    }
+
+    @Test
+    void whenDELETEBookByIdAndUserThenNoContentStatusShouldBeReturned() throws Exception{
+        BookRequest expectedBookToDelete = bookRequestDTOBuilder.buildBookRequestDTO();
+        Long bookId = expectedBookToDelete.getId();
+
+        doNothing().when(bookService).deleteByIdAndUser(any(AuthenticatedUser.class), eq(bookId));
+
+        mockMvc.perform(delete(BOOK_API_URL_TEST + '/' + bookId.intValue())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }
