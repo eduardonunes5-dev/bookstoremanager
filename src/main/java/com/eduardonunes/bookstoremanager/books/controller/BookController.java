@@ -49,4 +49,10 @@ public class BookController implements BookControllerDocs{
     public void deleteByIdAndUser(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @PathVariable Long bookId) {
         bookService.deleteByIdAndUser(authenticatedUser, bookId);
     }
+
+    @PutMapping("/{bookId}")
+    @ResponseStatus(HttpStatus.OK)
+    public BookResponse updateByUserAndId(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @RequestBody @Valid BookRequest bookRequest,@PathVariable Long bookId) {
+        return bookService.updateByUserAndId(authenticatedUser, bookRequest, bookId);
+    }
 }
