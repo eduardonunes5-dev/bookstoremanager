@@ -1,5 +1,5 @@
+[![Build Status](https://travis-ci.org/eduardonunes5-dev/bookstoremanager.svg?branch=master)](https://travis-ci.org/eduardonunes5-dev/bookstoremanager) 
 <h1>Book store API Manager</h1>
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.eduardonunes%3Abookstoremanager&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.eduardonunes%3Abookstoremanager)
 
 Projeto desenvolvido durante o curso Spring boot - do início à produção
 com boas pŕaticas, da Udemy.  
